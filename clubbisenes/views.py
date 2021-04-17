@@ -23,4 +23,22 @@ class Region(View):
 
 class Test(View):
     def get(self, request):
-        return render(request, 'clubbisenes/test.html',{})
+        return render(request, 'clubbisenes/test.html', {})
+
+
+class Sound(View):
+    def get(self, request):
+        return render(request, 'clubbisenes/sound.html', {})
+
+
+class LogIn(View):
+    def get(self, request):
+        return render(request, 'clubbisenes/logIn.html', {})
+
+class Cashier(View):
+    def get(self, request):
+        return render(request, 'clubbisenes/cashier.html', {})
+
+class Dj(View):
+    def get(self, request):
+        return render(request, 'clubbisenes/dj.html', {})
