@@ -151,3 +151,43 @@
 .popup__btn:active{
     color:green;
 }
+
+.cashier__shift{
+    position:absolute;
+    top:0;
+    right:0;
+    background-color: grey;
+    height: 40px;
+    width:200px;
+    cursor:pointer;
+}
+
+.cashier__shift-text{
+    text-align: center;
+    padding-top:10px;
+    font-weight: 600;
+    color:#fafafa;
+}
+
+.shift__popap{
+    position: absolute;
+    top: 0;
+    right: 50%;
+    padding: 15px;
+    transform: translateX(50%);
+    background-color: grey;
+    transform: translateY(-200%);
+    transition: all 0.3s;
+
+}
+.js_open{
+    color: red;
+    font-width:600;
+}
+.shift__popap-link{
+    text-decoration:None;
+
+}
+.is_active{
+    transform: none;
+}

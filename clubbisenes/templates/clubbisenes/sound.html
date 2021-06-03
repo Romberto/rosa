@@ -14,20 +14,22 @@
     <div class="container">
 
         <div class="sound">
-            <a href="/" class="sound__back">назад</a>
-            <form action="#" class="sound__form">
-                <p class="sound__label">введите название песни</p>
-                <input class="sound__label sound__name" type="text" name="soundName" id="soundName" maxlength="200">
-                <div class="sound__line"></div>
-                <p class="sound__label">или скриншот</p>
-                <input class="sound__file" type="file" name="soundFile">
-                <div class="sound__line"></div>
-                <p class="sound__label">не забудьте указать номер своего стола</p>
-                <input type="text" class="sound__label sound__number">
+            <div class="table-block table ">
+                <a href="{% url 'main' %}" class="sound__back">назад</a>
+                <div class="table__number">{{number}}</div>
+            </div>
+
+            <form method="post" action="#" enctype="multipart/form-data" class="sound__form">
+                {% csrf_token %}
+               <p class="sound__label">введите название песни</p>
+                {{ sound_form.name }}
+               <div class="sound__line"></div>
+               <p class="sound__label">или скриншот</p>
+                {{ sound_form.file }}
                 <div class="sound__line"></div>
                 <p class="sound__label">объявление перед песней</p>
-                <textarea ></textarea>
-                <div class="sound__line"></div>
+                {{ sound_form.description }}
+               <div class="sound__line"></div>
                 <button class="top__btn" type="submit">заказать</button>
             </form>
         </div>

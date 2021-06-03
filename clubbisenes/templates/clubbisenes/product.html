@@ -1,16 +1,17 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
     <head>
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="css/normalize.css">
-        <link rel="stylesheet" href="css/dj.css">
-        <link rel="stylesheet" href="css/cashier.css">
-        <link rel="stylesheet" href="css/product.css">
-        <link rel="stylesheet" href="css/style.css">
-        <link rel="stylesheet" href="css/media.css">
 
+        <link rel="stylesheet" href="{% static 'clubbisenes/css/product.css' %}">
+        <link rel="stylesheet" href="{% static 'clubbisenes/css/cashier.css' %}">
+        <link rel="stylesheet" href="{% static 'clubbisenes/css/normalize.css' %}">
+        <link rel="stylesheet" href="{% static 'clubbisenes/css/dj.css' %}">
+        <link rel="stylesheet" href="{% static 'clubbisenes/css/style.css' %}">
+        <link rel="stylesheet" href="{% static 'clubbisenes/css/media.css' %}">
 
         <title>product</title>
     </head>
@@ -18,29 +19,41 @@
         <div class="container-dj">
             <div class="product">
                 <div class="product__inner">
-                    <a href="dj.html" class="sound__back">назад</a>
+                    <a href="/dj" class="sound__back">назад</a>
                     <p class="ptoduct__title">модерация заказа</p>
-                    <div class="product__id"></div>
-                    <p class="product__sound-name">земфира крым</p>
+                    <div class="product__id">{{product.table}}</div>
+                    <p class="product__sound-name">{{product.name}}</p>
                     <div class="product__sound-image">
+                        {% if product.file %}
                         <p class="product__sound-file">скрин шот</p>
-                        <img class="sound-file__img" src="/images/selfi.jpg" alt="изображение песни">
-                    </div>
-                    <p class="product__sound-message">здесь будет сообщение оставленное клиентом </p>
-                    <form class="product__form" action="#">
-                        <div class="product__form-block">
-                            <label >
-                                <input  class="product_input" type="radio" name="moderation" value="yes" checked>
-                                <span class="check_yes"></span>
-                                да
-                            </label>
+                            <img src="{{ product.file.url }}" alt = "изображение" height="600" width="auto">
 
-                    
-                            <label>
-                                <input  class="product_input" type="radio" name="moderation" value="no">
-                                <span class="check_no"></span>
-                                 нет 
-                            </label>
+                        {% else %}
+                        <p>изображение отсутствует </p>
+                        {% endif %}
+                    </div>
+
+
+                    <p class="product__sound-message">{{product.description}} </p>
+                    <form class="product__form" method="post">
+                        {% csrf_token %}
+                        <div class="product__form-block">
+                            {% for anc in productModerForm.mod %}
+                                {{anc}}
+
+                            {% endfor %}
+<!--                            <label >-->
+<!--                                <input  class="product_input" type="radio" name="moderation" value="yes" checked>-->
+<!--                                <span class="check_yes"></span>-->
+<!--                                да-->
+<!--                            </label>-->
+
+<!--                    -->
+<!--                            <label>-->
+<!--                                <input  class="product_input" type="radio" name="moderation" value="no">-->
+<!--                                <span class="check_no"></span>-->
+<!--                                 нет -->
+<!--                            </label>-->
                         </div>
                         <button type="submit">отправить</button>
                     </form>

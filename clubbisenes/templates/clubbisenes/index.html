@@ -37,26 +37,42 @@
             </header>
             <main class="main">
                 <div class="scene">
-                    <h3 class="scene__title">заголовок</h3>
-                    <p class="scene__subtitle">текст в котором описывается, что это приложение поможет заказать песню или пиво или кальян </p>
+                    <h3 class="scene__title">{{ user }}</h3>
+                    <p class="scene__subtitle">добро пожаловать в Росинку ,номер вашего стола</p>
+                    <p class="scene__subtitle"><span>{{table}}</span></p>
+                    <p class="scene__subtitle">приятного отдыха</p>
                     <a href="#" class="scene__link"><img src="{% static 'clubbisenes/images/down-arrow-svgrepo-com.svg' %}" alt="arrow_down" class="scene__arrow"></a>
                 </div>
                 <top class="top">
                     <p class="top__title ">прошедшие песни</p>
-                    <ul class="top__list back">
-                        <li class="back__item"><span>3</span>Mia Boyka & Егор Шип–Наруто</li>
-                        <li class="back__item"><span>10</span>Niletto, Rauf & Faik–Если тебе будет грустно</li>
-                        <li class="back__item"><span>7</span>Женя Белоусов–Девчонка-девчоночка</li>
-                    </ul>
+                    {% if sounds %}
+                        <ul class="top__list back">
+                            {% for el in sounds %}
+                            <li class="back__item"><span>{{el.table}}</span>{{el.name}}</li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                    <p class="top__subtitle"> сегодня песни ещё не заказывали </p>
+                    {% endif %}
                     <p class="top__title ">заказанные песни</p>
-                    <ul class="top__list fresh">
-                        <li class="back__item fresh__item"><span>5</span>Женя Белоусов–Девчонка-девчоночка</li>
-                        <li class="back__item fresh__item"><span>2</span>Niletto, Rauf & Faik–Если тебе будет грустно</li>
-                        <li class="back__item fresh__item"><span>14</span>Женя Белоусов–Девчонка-девчоночка</li>
-                    </ul>
+                    {% if wait_mod %}
+                        <ul class="top__list fresh">
+                            {% for el in wait_mod %}
+                            <li class="back__item fresh__item"><span>{{el.table}}</span>{{el.name}}</li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                    <p class="top__subtitle"> сегодня песни ещё не заказывали </p>
+                    {% endif %}
+
                     <p class="top__subtitle">заказ песни стоит 100руб.</p>
-                    <a href="/sound.html" class="top__btn">заказать песню</a>
+
+
+
+                    <a href="/sound" class="top__btn">заказать песню</a>
                 </top>
+
+
 
 
             </main> 

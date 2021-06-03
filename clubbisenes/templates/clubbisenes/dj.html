@@ -18,54 +18,75 @@
             <p class="dj__title">Dj</p>
             <div class="block__data-name">
                 <p class="block__data">10.05<span>сб</span></p>
-                <p class="block__name">Элджас</p>
+                <p class="block__name">{{user}}</p>
             </div>
             <div class="dj_moderation mod">
                 <p class="mod__title">Заказы ожидающие модерации</p>
-                <ul class="mod__list">
-                    <li class="mod__item">
-                        <a href="/product.html?id=15" class="mod__preview">
-                            <span class="mod__icon">15</span>
-                            <span class="mod__text">Niletto, Rauf & Faik–Если тебе будет грустно</span>
-                        </a>
-                    </li>
-                    <li class="mod__item">
-                        <a href="/product.html?id=7" class="mod__preview">
-                            <span class="mod__icon">7</span>
-                            <span class="mod__text">Niletto, Rauf & Faik–Если тебе будет грустно</span>
-                        </a>
-                    </li>
-                </ul>
-                <p class="mod__not-text">Лист ожидания пуст</p>
+                {% if wait_mod%}
+                    <ul class="mod__list">
+                        {% for el in wait_mod %}
+
+                        <li class="mod__item">
+                            <a href="{% url 'djView' el.id %}" class="mod__preview">
+                                <span class="mod__icon">{{el.table}}</span>
+                                <span class="mod__text">{{el.name}}</span>
+                            </a>
+
+                        </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="mod__not-text">Лист ожидания пуст</p>
+                {% endif %}
+
             </div>
             <div class="dj__pay pay">
                 <p class="mod__title pay__title">Оплаченные заказы</p>
-                <ul class="mod__list">
-                    <li class="mod__item">
-                        <a href="#" class="mod__preview">
-                            <span class="mod__icon pay__icon-green">2</span>
-                            <span class="mod__text">Клава Кока & Morgenshtern–Мне пох</span>
-                        </a>
-                    </li>
-                    <li class="mod__item">
-                        <a href="#" class="mod__preview">
-                            <span class="mod__icon pay__icon-green">14</span>
-                            <span class="mod__text">Дима Билан–Про белые розы</span>
-                        </a>
-                    </li>
-                </ul>
+                {% if pay_sounds %}
+                    <ul class="mod__list">
+                        {% for elem in pay_sounds %}
+                        <li class="mod__item">
+                            <a href="#" class="mod__preview _js-mod">
+                                <span class="mod__icon pay__icon-green">{{elem.table}}</span>
+                                <span class="mod__text">{{elem.name}}</span>
+                            </a>
+                            <div class="mod__popup">
+                                <p class="mod__popup-text">Убедитесь , что песня </p>
+                                <p class="mod__popup-text red">{{elem.name}}</p>
+                                <p class="mod__popup-text"> в  плёй Листе </p>
+                                <div class="mod__popup-block">
+                                    <a class="mod__popup-btn" href="{% url 'djPlay' elem.id %}">
+                                        да
+                                    </a>
+                                    <a class="mod__popup-btn green _js-no" href="#">
+                                        нет
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="dj__info-not">заказов ещё не было</p>
+                {% endif %}
             </div>
             <div class="dj__info">
                 <p class="mod__title dj__info-title">Последние 5 заказов</p>
-                <ul class="dj__info-list">
-                    <li class="dj__info-item">Rasa–Под фонарём</li>
-                    <li class="dj__info-item">Макс Корж–Малиновый закат</li>
-                    <li class="dj__info-item">Natan & Ганвест–Ананасовый сироп</li>
-                    <li class="dj__info-item">Mia Boyka & Егор Шип–Пикачу</li>
-                    <li class="dj__info-item">Оксана Ковалевская–Он не знает ничего</li>
-                </ul>
-                <p class="gj__info-quantity">количество песен за сегодня:<span>7</span></p>
-                <p class="dj__info-not">заказов ещё не было</p>
+                {% if post_sounds %}
+                    <ul class="dj__info-list">
+                        {% for el in post_sounds %}
+                        <li class="dj__info-item">{{el.name}}</li>
+                        {% endfor %}
+
+                    </ul>
+                {% else %}
+                    <p class="dj__info-not">заказов ещё не было</p>
+                {% endif %}
+                {% if post_sounds_count %}
+                    <p class="gj__info-quantity">количество песен за сегодня:<span>{{post_sounds_count}}</span></p>
+                {% else %}
+                    <p class="dj__info-not">заказов ещё не было</p>
+                {% endif%}
             </div>
         </div>
     </div>
@@ -76,6 +97,6 @@
     crossorigin="anonymous">
     
 </script>
-<script src="{% static 'clubbienes/js/main.js' %}"></script>
+<script src="{% static 'clubbisenes/js/main.js' %}"></script>
 </body>
 </html>

@@ -7,11 +7,16 @@ window.addEventListener('load', function(){
         $('.mobile__menu').toggleClass('_active');
     })
 
-    $('.active-table__item').on('click', function(e){
+    $('._js-wait-pay').on('click', function(e){
         e.preventDefault()
-        activeTable = $(this)
+        var numberTable = $(this).text()
+        var soundId = $(this).next().text()
+        $('.popup__title span').text(numberTable)
         $('.cashier__inner').css('filter', 'blur(5px)')
         $('.active-table__popup').fadeIn();
+        $('.popup__input').val(soundId)
+
+
     })
 
     $('.popup__close').on('click', function(){
@@ -20,7 +25,7 @@ window.addEventListener('load', function(){
         
     })
     $('.popup__btn').on('click', function(){
-        activeTable.remove()
+
         $('.cashier__inner').css('filter', 'none')
         $('.active-table__popup').fadeOut();
     })
@@ -45,9 +50,26 @@ window.addEventListener('load', function(){
     var id = getUrlParameter('id')
  
     
+    $('._js-mod').on('click', function(e){
+        e.preventDefault()
+        $(this).next().toggleClass('_active')
+    })
 
- 
+    $('._js-no').on('click', function(e){
+        e.preventDefault()
+        $('.mod__popup').removeClass('_active')
+    })
 
+    $('.login__link').on('click', function(e){
+        e.preventDefault()
+        $('.popup_logIn').fadeIn();
+    })
 
-    
+    $('.popup__close').on('click', function(e){
+        e.preventDefault()
+        $('.popup_logIn').fadeOut()
+    })
+    $('.cashier__shift').on('click',function(){
+        $('.shift__popap').toggleClass('is_active')
+    })
 })

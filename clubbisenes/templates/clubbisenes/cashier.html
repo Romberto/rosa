@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'clubbisenes/css/normalize.css' %}">
+    <link rel="stylesheet" href="{% static 'clubbisenes/css/dj.css' %}">
     <link rel="stylesheet" href="{% static 'clubbisenes/css/cashier.css' %}">
     <link rel="stylesheet" href="{% static 'clubbisenes/css/style.css' %}">
     <link rel="stylesheet" href="{% static 'clubbisenes/css/media.css' %}">
@@ -17,11 +18,30 @@
     <div class="container">
         <div class="cashier">
             <div class="cashier__inner">
+                <div class="cashier__shift">
+                    <p class="cashier__shift-text">меню кассира</p>
+                </div>
+                <div class="shift__popap">
+                    <ul class="shift__popap-list">
+                        {% if not state %}
+                            <li><a href="{% url 'openShift' %}" class="shift__popap-link js_open">открыть смену</a></li>
+                        {% else %}
+                            <li><a href="{% url 'deleteShift' %}" class="shift__popap-link js_open">закрыть смену</a></li>
+                        {% endif %}
+                    </ul>
+
+
+                </div>
+
                 <a href="/logIn/" class="sound__back">назад</a>
-                <p class="cashier__title">кассир</p>
+                {% if state %}
+                <p class="cashier__title">смена открыта</p>
+                {% else %}
+                <p class="cashier__title">смена закрыта</p>
+                {% endif %}
                 <div class="block__data-name">
                     <p class="block__data">10.05<span>сб</span></p>
-                    <p class="block__name">Максим</p>
+                    <p class="block__name">{{user}}</p>
                 </div>
                 <div class="casheir__active-table active-table">
                     <p class="active-table__title">Активные столы</p>
@@ -36,32 +56,41 @@
                 
                 <div class="casheir__donat donat">
                     <p class="active-table__title">Заявки на оплату</p>
+                    {% if wait_pay %}
                     <ul class="donat__list">
-                        <li class="active-table__item red">7</li>
+                        {% for el in wait_pay %}
+                        <li class="active-table__item red _js-wait-pay">{{el.table}}</li>
+                        <p hidden >{{el.id}}</p>
+
+                        {% endfor %}
                     </ul>
+                    {% else %}
                     <p class="casheir__not-table js_not-donat">активных заявок нет</p>
+                    {% endif %}
                     <div class="sound__line"></div>
                 </div>
                 <div class="casheir__info info">
                     <p class="active-table__title">Информация</p>
-                    <ul class="info__list js_info">
-                    </ul>
-                    <p class="casheir__not-table js_not-info">закрытых столов нет</p>
+                {% if post_sounds_count %}
+                    <p class="gj__info-quantity">количество песен за сегодня:<span>{{post_sounds_count}}</span></p>
+                {% else %}
+                    <p class="dj__info-not">заказов ещё не было</p>
+                {% endif%}
                 </div>
             </div>
-
-                <div class="active-table__popup">
-        <div class="popup__inner">
-            <div class="popup__window">
-                <span class="popup__close"></span>
-                <p class="popup__title">стол № <span>7</span></p>
-                <form action="#" >
-                    <input class="popup__input" type="text" name="tableNumber" hidden>
-                    <button class="popup__btn" type="submit">обработать</button>
-                </form>
+            <div class="active-table__popup">
+                <div class="popup__inner">
+                    <div class="popup__window">
+                        <span class="popup__close"></span>
+                        <p class="popup__title">стол № <span></span></p>
+                        <form action="#" method="post" >
+                            {% csrf_token %}
+                            {{ payForm.pay }}
+                            <button class="popup__btn" type="submit">оплачено</button>
+                        </form>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
 
         </div>
 
