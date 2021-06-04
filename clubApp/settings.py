@@ -35,7 +35,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'clubbisenes'
+    'clubbisenes',
+    'registration'
 ]
 
 MIDDLEWARE = [
@@ -124,3 +125,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'clubbisenes/', 'media/')
 MEDIA_URL = '/media/'
 
 SESSION_COOKIE_AGE = 12 * 60 * 60
+
+LOGIN_REDIRECT_URL = 'auth/'

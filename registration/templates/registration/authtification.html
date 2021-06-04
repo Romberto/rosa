@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'registration/css/normalize.css' %}">
+    <link rel="stylesheet" href="{% static 'registration/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'registration/css/media.css' %}">
+    <title>Вход</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="auth">
+            <div class="auth__wrapper">
+                {% csrf_token %}
+                <form action="#" class="auth__form" method="POST">
+
+                    <p class="auth__title">вход</p>
+                    <p class="auth__text">введите логин</p>
+                    {{ form.username }}
+                    <p class="auth__text">введите пароль</p>
+                    {{ form.password }}
+                    <button type="submit" class="auth__btn">войти</button>
+                </form>
+                <div class="auth__list">
+                    <a href="#" class="auth__remember">забыли пароль?</a>
+                    <a href="#" class="auth__register">регистрация</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
