@@ -18,17 +18,11 @@
             <div class="auth__wrapper">
                 {% csrf_token %}
                 <form action="#" class="auth__form" method="POST">
-
-                    <p class="auth__title">вход</p>
-                    <p class="auth__text">введите логин</p>
-                    {{ form.username }}
-                    <p class="auth__text">введите пароль</p>
-                    {{ form.password }}
+                  <p class="auth__text">Укажите номер столика за который присели</p>
+                    {{ form.numberTable }}
                     <button type="submit" class="auth__btn">войти</button>
                 </form>
                 <div class="auth__list">
-                    <a href="#" class="auth__remember">забыли пароль?</a>
-                    <a href="{% url 'regist' %}" class="auth__register">регистрация</a>
                 </div>
             </div>
         </div>

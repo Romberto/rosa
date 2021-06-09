@@ -30,8 +30,6 @@ class Authenticate(View):
     @shiftDecoration
     def get(self, request):
         table = int(request.GET['table'])
-        user_day = User.objects.get(username='table-10_user-1')
-        password = user_day.password
         table_db = Table.objects.get(number=table)
         users = UserProfileModel.objects.filter(table=table_db)
         for _user in users:
@@ -43,7 +41,6 @@ class Authenticate(View):
 
                     data = {'user': user_name,
                             'table': table,
-                            'users': password,
                             'sounds': Sounds.objects.filter(status=4).order_by('-id')[:3:-1],
                             'wait_mod': Sounds.objects.filter(status=2).order_by('-id')[:3:-1]
                             }
@@ -52,14 +49,16 @@ class Authenticate(View):
 
 class Main(View):
     def get(self, request):
-        table = request.user.profile.table
-        data = {
-            'table': table,
-            'sounds': Sounds.objects.filter(status=4).order_by('-id')[:3:-1],
-            'wait_mod': Sounds.objects.filter(status=2).order_by('-id')[:3:-1]
-        }
-
-        return render(request, 'clubbisenes/index.html', data)
+        if request.user.is_authenticated:
+            table = request.user.profile.table
+            data = {
+                'table': table,
+                'sounds': Sounds.objects.filter(status=4).order_by('-id')[:3:-1],
+                'wait_mod': Sounds.objects.filter(status=2).order_by('-id')[:3:-1]
+            }
+            return render(request, 'clubbisenes/index.html', data)
+        else:
+            return redirect('/reg/login/')
 
 
 class Test(View):
@@ -84,7 +83,7 @@ class Sound(View):
             new_sound.save()
             return redirect('/auth?table=' + str(new_sound.table.number))
         else:
-            return redirect('/auth')
+            return redirect('/login/')
 
 
 class LogIn(View):
@@ -220,6 +219,7 @@ class bdFull(View):
 
         return redirect('/')
 
+
 class DeleteShift(View):
     @shiftDecoration
     def get(self, request):
@@ -229,6 +229,7 @@ class DeleteShift(View):
         else:
             return redirect('/test')
 
+
 class OpenShift(View):
     def get(self, request):
         if request.user.groups.filter(name="cachers").exists():
@@ -237,7 +238,7 @@ class OpenShift(View):
             day_password = shift.day_password
             users = User.objects.all()
             for user in users:
-                if user.groups.filter(name="cachers").exists() or user.groups.filter(name="djs").exists() :
+                if user.groups.filter(name="cachers").exists() or user.groups.filter(name="djs").exists():
                     continue
                 else:
                     user.password = '12345'

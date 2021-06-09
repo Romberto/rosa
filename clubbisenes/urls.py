@@ -16,5 +16,6 @@ urlpatterns = [
     path('auth/', views.Authenticate.as_view(), name="authenticate"),
     path('creat', views.bdFull.as_view(), name="create"),
     path('delete_shift', views.DeleteShift.as_view(), name="deleteShift"),
-    path('open_shift', views.OpenShift.as_view(), name="openShift")
+    path('open_shift', views.OpenShift.as_view(), name="openShift"),
+
 ]

@@ -44,6 +44,7 @@ class Sounds(models.Model):
 class UserProfileModel(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     table = models.ForeignKey(Table, null=True, on_delete=models.CASCADE,)
+    phone = models.TextField(null=True, blank=True)
     activate = models.BooleanField(default=False)
     class Meta:
         verbose_name = "ProfileUser"
