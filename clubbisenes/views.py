@@ -29,23 +29,20 @@ def shiftDecoration(func):
 class Authenticate(View):
     @shiftDecoration
     def get(self, request):
-        table = int(request.GET['table'])
-        table_db = Table.objects.get(number=table)
-        users = UserProfileModel.objects.filter(table=table_db)
-        for _user in users:
-            if _user.activate == False:
-                user_name = _user.user.username
-                user = authenticate(username=user_name, password='12345')
-                if user.is_active:
-                    login(request, user)
-
-                    data = {'user': user_name,
-                            'table': table,
-                            'sounds': Sounds.objects.filter(status=4).order_by('-id')[:3:-1],
-                            'wait_mod': Sounds.objects.filter(status=2).order_by('-id')[:3:-1]
-                            }
-                    return render(request, 'clubbisenes/index.html', data)
-
+        if request.user.is_authenticated:
+            table = int(request.GET['table'])
+            _username = request.user.username
+            user = User.objects.get(username=_username)
+            user.profile.table = table
+            user.save()
+            data = {'user': user.username,
+                    'table': table,
+                    'sounds': Sounds.objects.filter(status=4).order_by('-id')[:3:-1],
+                    'wait_mod': Sounds.objects.filter(status=2).order_by('-id')[:3:-1]
+                    }
+            return render(request, 'clubbisenes/index.html', data)
+        else:
+            return redirect('/reg/reg/')
 
 class Main(View):
     def get(self, request):

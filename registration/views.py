@@ -27,28 +27,44 @@ class RegistrationView(View):
     def post(self, request):
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            username = form.cleaned_data['username']
+            name = form.cleaned_data.get('username')
+            passw = form.cleaned_data.get('password')
+            user = User.objects.create_user(username=name, password=passw)
+            user.save()
             phone = form.cleaned_data['phone']
-            password = form.cleaned_data['password']
-            new_user = form.save()
             UserProfileModel.objects.create(
-                user=new_user,
+                user=user,
                 phone=phone
             )
-            auth_user = authenticate(username=username, password=password)
+            name = form.cleaned_data.get('username')
+            passw = form.cleaned_data.get('password')
+            auth_user = authenticate(username=name, password=passw)
             if auth_user is not None:
                 login(request, auth_user)
-                return render(request, "clubbisenes/index.html")
+
+                return redirect('/reg/changeTable/')
+            return HttpResponse('<h1>fuck</h1>')
 
         else:
-            return HttpResponse(form.errors)
+            return HttpResponse('<h1>fuck222</h1>')
 
 
 class TableChange(View):
     def get(self, request):
         data = {
-
-
             'form': FormTableChange
         }
         return render(request, 'clubbisenes/changeTable.html', data)
+
+    def post(self, request):
+        form = FormTableChange(request.POST)
+        if form.is_valid():
+            table = form.cleaned_data.get('numberTable')
+            if request.user.is_authenticated:
+                username = request.user.username
+                user = User.objects.get(username=username)
+                get_user = UserProfileModel.objects.get(user=user)
+                get_user.table = table
+                get_user.save()
+                return redirect('/main/')
+

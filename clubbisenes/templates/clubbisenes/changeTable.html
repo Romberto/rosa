@@ -9,15 +9,16 @@
     <link rel="stylesheet" href="{% static 'registration/css/normalize.css' %}">
     <link rel="stylesheet" href="{% static 'registration/css/style.css' %}">
     <link rel="stylesheet" href="{% static 'registration/css/media.css' %}">
-    <title>Вход</title>
+    <title>table</title>
 </head>
 
 <body>
     <div class="container">
         <div class="auth">
             <div class="auth__wrapper">
-                {% csrf_token %}
+
                 <form action="#" class="auth__form" method="POST">
+                    {% csrf_token %}
                   <p class="auth__text">Укажите номер столика за который присели</p>
                     {{ form.numberTable }}
                     <button type="submit" class="auth__btn">войти</button>
