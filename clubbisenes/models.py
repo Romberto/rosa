@@ -54,12 +54,4 @@ class ShiftUser(models.Model):
     state = models.BooleanField(default=True)
     date_open = models.DateTimeField(auto_now_add=True)
     date_close = models.DateTimeField(blank=True, null=True)
-    day_password = models.TextField(blank=True, null=True)
 
-    def password(self):
-        DAY_PASS = randint(1111111111, 9999999999)
-        return str(DAY_PASS)
-
-    def save(self):
-        self.day_password = self.password()
-        super(ShiftUser, self).save()

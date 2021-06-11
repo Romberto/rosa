@@ -17,7 +17,7 @@ class AdminProfileUser(admin.ModelAdmin):
 
 @admin.register(ShiftUser)
 class AdminShift(admin.ModelAdmin):
-    list_display = ('state', 'date_open', 'date_close','day_password')
+    list_display = ('state', 'date_open', 'date_close')
 
 
 admin.site.register(Sounds)

@@ -216,30 +216,3 @@ class bdFull(View):
 
         return redirect('/')
 
-
-class DeleteShift(View):
-    @shiftDecoration
-    def get(self, request):
-        if request.user.groups.filter(name="cachers").exists():
-            shift = ShiftUser.objects.get(state=True).delete()
-            return redirect('/cashier')
-        else:
-            return redirect('/test')
-
-
-class OpenShift(View):
-    def get(self, request):
-        if request.user.groups.filter(name="cachers").exists():
-            shift = ShiftUser()
-            shift.save()
-            day_password = shift.day_password
-            users = User.objects.all()
-            for user in users:
-                if user.groups.filter(name="cachers").exists() or user.groups.filter(name="djs").exists():
-                    continue
-                else:
-                    user.password = '12345'
-                    user.save()
-            return redirect('/cashier')
-        else:
-            return redirect('/test')
