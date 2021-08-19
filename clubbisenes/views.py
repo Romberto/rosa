@@ -1,24 +1,18 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
 from django.views import View
-from django.views.generic import DetailView
-from .models import Sounds, SoundStatus, UserProfileModel, Table, ShiftUser
+from .models import *
 from .forms import SoundForms, ModerationForm, PlayForm, PayForm, AuthForm
 from django.contrib.auth.models import User, Group
 from django.contrib.auth import authenticate, login, logout
-from random import randint
+from django.http import JsonResponse
 
 
 def shiftDecoration(func):
     def wraper(self, request):
         shistState = ShiftUser.objects.filter(state=True)
         if not shistState:
-            data = {
-                'AuthForm': AuthForm(),
-
-            }
-
-            return render(request, 'clubbisenes/logIn.html', data)
+            return redirect('/shift')
         return func(self, request)
 
     return wraper
@@ -26,34 +20,44 @@ def shiftDecoration(func):
     return wraper
 
 
+class ShiftError(View):
+    def get(self, request):
+        return render(request, 'clubbisenes/shifterror.html')
+
+
 class Authenticate(View):
     @shiftDecoration
     def get(self, request):
-        if request.user.is_authenticated:
-            table = int(request.GET['table'])
-            _username = request.user.username
-            user = User.objects.get(username=_username)
-            user.profile.table = table
-            user.save()
-            data = {'user': user.username,
-                    'table': table,
-                    'sounds': Sounds.objects.filter(status=4).order_by('-id')[:3:-1],
-                    'wait_mod': Sounds.objects.filter(status=2).order_by('-id')[:3:-1]
-                    }
-            return render(request, 'clubbisenes/index.html', data)
-        else:
-            return redirect('/reg/reg/')
-
-class Main(View):
-    def get(self, request):
-        if request.user.is_authenticated:
-            table = request.user.profile.table
-            data = {
+        _username = request.user.username
+        user = User.objects.get(username=_username)
+        print(user.profile.get().table)
+        table = user.profile.get().table
+        data = {'user': user.username,
                 'table': table,
                 'sounds': Sounds.objects.filter(status=4).order_by('-id')[:3:-1],
                 'wait_mod': Sounds.objects.filter(status=2).order_by('-id')[:3:-1]
-            }
-            return render(request, 'clubbisenes/index.html', data)
+                }
+        return render(request, 'clubbisenes/index.html', data)
+
+
+class Main(View):
+    @shiftDecoration
+    def get(self, request):
+        if request.user.is_authenticated:
+            if request.user.groups.filter(name="clients").exists():
+                try:
+                    user = UserProfileModel.objects.get(user=request.user)
+                    table = user.table
+                    data = {
+                        'table': table,
+                        'sounds': Sounds.objects.filter(status=4).order_by('-id')[:3:-1],
+                        'wait_mod': Sounds.objects.filter(status=2).order_by('-id')[:3:-1]
+                    }
+                    return render(request, 'clubbisenes/index.html', data)
+                except ObjectDoesNotExist:
+                    return redirect('reg/changeTable/')
+            else:
+                return redirect('/reg/login/')
         else:
             return redirect('/reg/login/')
 
@@ -66,9 +70,16 @@ class Test(View):
 class Sound(View):
     @shiftDecoration
     def get(self, request):
-        sound_form = SoundForms()
-        number = request.user.profile.table
-        return render(request, 'clubbisenes/sound.html', {'sound_form': sound_form, 'number': number})
+        if request.user.is_authenticated:
+            sound_form = SoundForms(request.POST or None)
+
+            try:
+                number = request.user.profile.get().table
+            except:
+                return redirect('/reg/changeTable')
+            return render(request, 'clubbisenes/sound.html', {'sound_form': sound_form, 'number': number})
+        else:
+            return redirect('/reg/login/')
 
     def post(self, request):
         form = SoundForms(request.POST, request.FILES)
@@ -76,18 +87,18 @@ class Sound(View):
             data = form.cleaned_data
             new_sound = Sounds(**data)
             new_sound.user = request.user
-            new_sound.table = request.user.profile.table
             new_sound.save()
-            return redirect('/auth?table=' + str(new_sound.table.number))
+            return redirect('/auth')
         else:
             return redirect('/login/')
 
 
 class LogIn(View):
-    @shiftDecoration
     def get(self, request):
+        form = AuthForm(request.POST or None)
         data = {
-            'AuthForm': AuthForm(),
+            'AuthForm': form,
+            'error': form.errors
 
         }
 
@@ -113,13 +124,23 @@ class LogIn(View):
                 else:
                     return render(request, 'clubbisenes/test.html')
             else:
-                return redirect('/test')
+                return redirect('/logIn/')
 
 
 class Cashier(View):
     def get(self, request):
         if request.user.groups.filter(name="cachers").exists():
+            all_profile = UserProfileModel.objects.all().order_by('table')
+            table_list = []
+            for table in all_profile:
+                number = table.table
+                if number in table_list:
+                    continue
+                else:
+                    table_list.append(number)
+
             data = {'wait_pay': Sounds.objects.filter(status=3),
+                    'table_list': table_list,
                     'payForm': PayForm(),
                     'state': ShiftUser.objects.filter(state=True),
                     'post_sounds_count': Sounds.objects.filter(status=4).count()}
@@ -128,13 +149,16 @@ class Cashier(View):
             return redirect('/test')
 
     def post(self, requests):
-        form = PayForm(requests.POST)
-        if form.is_valid():
-            soundId = form.cleaned_data.get('pay')
-            sound = Sounds.objects.get(id=int(soundId))
-            sound.status = SoundStatus.objects.get(id=1)
-            sound.save()
-            return redirect('/cashier')
+        if requests.user.groups.filter(name="cachers").exists():
+            form = PayForm(requests.POST)
+            if form.is_valid():
+                soundId = form.cleaned_data.get('pay')
+                sound = Sounds.objects.get(id=int(soundId))
+                sound.status = SoundStatus.objects.get(id=1)
+                sound.save()
+                return redirect('/cashier')
+            else:
+                print('ooo')
 
 
 class Dj(View):
@@ -153,7 +177,7 @@ class Dj(View):
 
 
 class DjPlay(View):
-    @shiftDecoration
+
     def get(self, request, pk):
         if request.user.groups.filter(name="djs").exists():
             sound = Sounds.objects.get(id=pk)
@@ -166,13 +190,13 @@ class DjPlay(View):
                     'playForm': PlayForm()
                     }
 
-            return redirect('clubbisenes/dj.html')
+            return render(request, 'clubbisenes/dj.html', data)
         else:
             return redirect('/test')
 
 
 class SoundModerationView(View):
-    @shiftDecoration
+
     def get(self, request, pk):
         if request.user.groups.filter(name="djs").exists():
             product = Sounds.objects.get(id=pk)
@@ -199,20 +223,28 @@ class SoundModerationView(View):
         return redirect('/dj')
 
 
-class bdFull(View):
-    def get(self):
-        for table in range(1, 41):
-            new_table = Table()
-            new_table.number = table
-            new_table.save()
-            for user in range(1, 7):
-                user_name = "table-{0}_user-{1}".format(table, user)
-                new_user = User.objects.create_user(username=user_name, password="12345")
-                new_user.save()
-                user_profile = UserProfileModel()
-                user_profile.user = new_user
-                user_profile.table = new_table
-                user_profile.save()
+class Dynamic_wait_mod(View):
 
-        return redirect('/')
-
+    def get(self, request):
+        lastItemId = request.GET.get('lastId')
+        filters = {
+            'status': 2
+        }
+        filter__pk = 'pk__gt=int(lastItemId)'
+        print(lastItemId)
+        try:
+            wait_mod = Sounds.objects.filter(pk__gt=int(lastItemId))
+        except TypeError:
+            return JsonResponse({'data': False})
+        if not wait_mod:
+            return JsonResponse({'data': False})
+        data=[]
+        for sound in wait_mod:
+            obj = {
+                'id': sound.id,
+                'table': sound.table,
+                'name': sound.name
+            }
+            data.append(obj)
+        data[-1]['last_item'] = True
+        return JsonResponse({'data': data})

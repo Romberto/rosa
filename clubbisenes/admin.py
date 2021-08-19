@@ -1,8 +1,6 @@
 from django.contrib import admin
-from clubbisenes.models import SoundStatus, Sounds, Table, UserProfileModel, ShiftUser
-
-
-# admin.site.register(SoundStatus)
+from clubbisenes.models import SoundStatus, Sounds, UserProfileModel, ShiftUser
+from django.contrib.auth.models import User
 
 
 @admin.register(SoundStatus)
@@ -21,5 +19,3 @@ class AdminShift(admin.ModelAdmin):
 
 
 admin.site.register(Sounds)
-
-admin.site.register(Table)

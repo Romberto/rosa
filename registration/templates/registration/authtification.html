@@ -16,9 +16,11 @@
     <div class="container">
         <div class="auth">
             <div class="auth__wrapper">
-                {% csrf_token %}
+                {% if error %}
+                    <p class="auth__text">{{ error }}</p>
+                {% endif %}
                 <form action="#" class="auth__form" method="POST">
-
+                    {% csrf_token %}
                     <p class="auth__title">вход</p>
                     <p class="auth__text">введите логин</p>
                     {{ form.username }}

@@ -22,17 +22,28 @@
             </div>
             <div class="dj_moderation mod">
                 <p class="mod__title">Заказы ожидающие модерации</p>
-                {% if wait_mod%}
-                    <ul class="mod__list">
+                {% if wait_mod %}
+
+                    <ul class="mod__list" id="wait_mod">
                         {% for el in wait_mod %}
+                            {% if forloop.last %}
+                                <li class="mod__item " >
+                                    <a href="{% url 'djView' el.id %}" class="mod__preview items last_item" data-itemid="{{ el.id }}" >
+                                        <span class="mod__icon">{{el.table}}</span>
+                                        <span class="mod__text">{{el.name}}</span>
+                                    </a>
 
-                        <li class="mod__item">
-                            <a href="{% url 'djView' el.id %}" class="mod__preview">
-                                <span class="mod__icon">{{el.table}}</span>
-                                <span class="mod__text">{{el.name}}</span>
-                            </a>
+                                </li>
+                            {% else %}
+                                <li class="mod__item">
+                                    <a href="{% url 'djView' el.id %}" class="mod__preview items">
+                                        <span class="mod__icon">{{el.table}}</span>
+                                        <span class="mod__text">{{el.name}}</span>
+                                    </a>
 
-                        </li>
+                                </li>
+                            {% endif %}
+
                         {% endfor %}
                     </ul>
                 {% else %}
@@ -98,5 +109,6 @@
     
 </script>
 <script src="{% static 'clubbisenes/js/main.js' %}"></script>
+<script src="{% static 'clubbisenes/js/ajax_dj.js' %}"></script>
 </body>
 </html>

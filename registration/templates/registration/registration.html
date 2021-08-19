@@ -19,6 +19,9 @@
     <div class="container">
         <div class="regist">
             <div class="regist__inner">
+                {% if error %}
+                     <p class="auth__text">{{ error }}</p>
+                {% endif %}
 
                 <form action="#" class="regist__form" method="POST">
                     {% csrf_token %}

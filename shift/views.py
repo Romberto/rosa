@@ -1,9 +1,10 @@
 import datetime
 
+
 from django.shortcuts import render, redirect
 from django.views import View
 
-from clubbisenes.models import ShiftUser
+from clubbisenes.models import ShiftUser, UserProfileModel, Sounds
 from clubbisenes.views import shiftDecoration
 
 
@@ -16,6 +17,12 @@ class CloseShiftView(View):
             close_time = datetime.datetime.now()
             shift_day.date_close = close_time
             shift_day.save()
+            tables = UserProfileModel.objects.all()
+            sounds = Sounds.objects.all()
+            for table in tables:
+                table.delete()
+            for sound in sounds:
+                sound.delete()
             return redirect('/cashier')
         else:
             return redirect('/test')

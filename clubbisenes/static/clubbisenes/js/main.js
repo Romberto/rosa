@@ -10,11 +10,12 @@ window.addEventListener('load', function(){
     $('._js-wait-pay').on('click', function(e){
         e.preventDefault()
         var numberTable = $(this).text()
-        var soundId = $(this).next().text()
+        var soundId = $(this).find('#js_sound_id').text()
         $('.popup__title span').text(numberTable)
         $('.cashier__inner').css('filter', 'blur(5px)')
         $('.active-table__popup').fadeIn();
         $('.popup__input').val(soundId)
+        console.log(soundId)
 
 
     })
@@ -72,4 +73,6 @@ window.addEventListener('load', function(){
     $('.cashier__shift').on('click',function(){
         $('.shift__popap').toggleClass('is_active')
     })
+
 })
+

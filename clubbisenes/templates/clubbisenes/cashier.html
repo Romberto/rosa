@@ -46,9 +46,9 @@
                 <div class="casheir__active-table active-table">
                     <p class="active-table__title">Активные столы</p>
                     <ul class="active-table__list js_tables">
-                        <li class="active-table__item green">3</li>
-                        <li class="active-table__item green">10</li>
-                        <li class="active-table__item green">7</li>
+                        {% for number_table in table_list %}
+                            <li class="active-table__item green">{{number_table}}</li>
+                        {% endfor %}
                     </ul>
                     <p class="casheir__not-table js_not-table">активных столов нет</p>
                     <div class="sound__line"></div>
@@ -59,8 +59,10 @@
                     {% if wait_pay %}
                     <ul class="donat__list">
                         {% for el in wait_pay %}
-                        <li class="active-table__item red _js-wait-pay">{{el.table}}</li>
-                        <p hidden >{{el.id}}</p>
+                        <li class="active-table__item _js-wait-pay">{{el.table}}
+                        <p hidden id="js_sound_id">{{el.id}}</p>
+
+                        <div class="js_sound-name">{{ el.name}}</div></li>
 
                         {% endfor %}
                     </ul>
