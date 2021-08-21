@@ -234,6 +234,7 @@ class Dynamic_wait_mod(View):
         print(lastItemId)
         try:
             wait_mod = Sounds.objects.filter(pk__gt=int(lastItemId))
+
         except TypeError:
             return JsonResponse({'data': False})
         if not wait_mod:

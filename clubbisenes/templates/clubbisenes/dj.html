@@ -56,25 +56,26 @@
                 {% if pay_sounds %}
                     <ul class="mod__list">
                         {% for elem in pay_sounds %}
-                        <li class="mod__item">
-                            <a href="#" class="mod__preview _js-mod">
-                                <span class="mod__icon pay__icon-green">{{elem.table}}</span>
-                                <span class="mod__text">{{elem.name}}</span>
-                            </a>
-                            <div class="mod__popup">
-                                <p class="mod__popup-text">Убедитесь , что песня </p>
-                                <p class="mod__popup-text red">{{elem.name}}</p>
-                                <p class="mod__popup-text"> в  плёй Листе </p>
-                                <div class="mod__popup-block">
-                                    <a class="mod__popup-btn" href="{% url 'djPlay' elem.id %}">
-                                        да
+                            {% if forloop.last %}
+                                <li class="mod__item">
+                                    <a href="#" class="mod__preview _js-mod">
+                                        <span class="mod__icon pay__icon-green">{{elem.table}}</span>
+                                        <span class="mod__text">{{elem.name}}</span>
                                     </a>
-                                    <a class="mod__popup-btn green _js-no" href="#">
-                                        нет
-                                    </a>
-                                </div>
-                            </div>
-                        </li>
+                                    <div class="mod__popup">
+                                        <p class="mod__popup-text">Убедитесь , что песня </p>
+                                        <p class="mod__popup-text red">{{elem.name}}</p>
+                                        <p class="mod__popup-text"> в  плёй Листе </p>
+                                        <div class="mod__popup-block">
+                                            <a class="mod__popup-btn" href="{% url 'djPlay' elem.id %}">
+                                                да
+                                            </a>
+                                            <a class="mod__popup-btn green _js-no" href="#">
+                                                нет
+                                            </a>
+                                        </div>
+                                    </div>
+                                </li>
                         {% endfor %}
                     </ul>
                 {% else %}
